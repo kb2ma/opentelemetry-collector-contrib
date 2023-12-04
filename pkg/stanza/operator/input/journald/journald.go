@@ -98,7 +98,7 @@ func (c Config) buildArgs() ([]string, error) {
 	args = append(args, "--utc")
 
 	// Export logs as JSON
-	args = append(args, "--output=json")
+	args = append(args, "--output=short")
 
 	// Continue watching logs until cancelled
 	args = append(args, "--follow")
