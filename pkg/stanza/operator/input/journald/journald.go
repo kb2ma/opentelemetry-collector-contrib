@@ -366,11 +366,11 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 		return nil, "", errors.New("journald field for cursor is not a string")
 	}
 
+	// To create message attribute below
 	message, ok := body["MESSAGE"]
 	if !ok {
 		return nil, "", errors.New("journald body missing MESSAGE field")
 	}
-	fmt.Printf("message is %v", message)
 
 	entry, err := operator.NewEntry(body)
 	if err != nil {
@@ -378,9 +378,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	}
 
 	entry.Timestamp = time.Unix(0, timestampInt*1000) // in microseconds
-
-	// Add message attribute
-	entry.AddAttribute("message_text", "stripped")
+	entry.AddAttribute("message_text", string(message.([]byte)))
 
 	return entry, cursorString, nil
 }
