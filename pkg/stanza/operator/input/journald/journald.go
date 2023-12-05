@@ -378,7 +378,10 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	}
 
 	entry.Timestamp = time.Unix(0, timestampInt*1000) // in microseconds
-	entry.AddAttribute("message_text", string(message.([]byte)))
+	var msgArray []byte
+	_ = operator.json.Unmarshal(message.([]byte), &msgArray)
+
+	entry.AddAttribute("message_text", string(msgArray))
 
 	return entry, cursorString, nil
 }
