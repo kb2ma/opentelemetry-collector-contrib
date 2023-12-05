@@ -98,7 +98,7 @@ func (c Config) buildArgs() ([]string, error) {
 	args = append(args, "--utc")
 
 	// Export logs as JSON
-	args = append(args, "--output=short")
+	args = append(args, "--output=json")
 
 	// Continue watching logs until cancelled
 	args = append(args, "--follow")
@@ -366,12 +366,22 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 		return nil, "", errors.New("journald field for cursor is not a string")
 	}
 
+	message, ok := body["MESSAGE"]
+	if !ok {
+		return nil, "", errors.New("journald body missing MESSAGE field")
+	}
+	fmt.Printf("message is %v", message)
+
 	entry, err := operator.NewEntry(body)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to create entry: %w", err)
 	}
 
 	entry.Timestamp = time.Unix(0, timestampInt*1000) // in microseconds
+
+	// Add message attribute
+	entry.AddAttribute("message_text", "stripped")
+
 	return entry, cursorString, nil
 }
 
