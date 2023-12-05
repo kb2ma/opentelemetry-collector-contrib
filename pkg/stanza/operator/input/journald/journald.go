@@ -19,7 +19,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"reflect"
 
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
@@ -372,7 +371,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	if !ok {
 		return nil, "", errors.New("journald body missing MESSAGE field")
 	}
-	fmt.Printf("Type of message: %v\n", reflect.TypeOf(message))
+	fmt.Printf("Type of message: %T\n", message)
 
 	entry, err := operator.NewEntry(body)
 	if err != nil {
