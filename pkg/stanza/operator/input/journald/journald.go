@@ -19,6 +19,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"reflect"
 
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
@@ -371,6 +372,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	if !ok {
 		return nil, "", errors.New("journald body missing MESSAGE field")
 	}
+	fmt.Printf("Type of message: %v\n", reflect.TypeOf(message))
 
 	entry, err := operator.NewEntry(body)
 	if err != nil {
@@ -379,9 +381,9 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 
 	entry.Timestamp = time.Unix(0, timestampInt*1000) // in microseconds
 
-	var msgArray []byte
-	_ = operator.json.Unmarshal([]byte(message.(string)), &msgArray)
-	entry.AddAttribute("message_text", string(msgArray))
+	//var msgArray []byte
+	//_ = operator.json.Unmarshal([]byte(message.(string)), &msgArray)
+	//entry.AddAttribute("message_text", string(msgArray))
 
 	return entry, cursorString, nil
 }
