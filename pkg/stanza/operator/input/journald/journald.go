@@ -375,7 +375,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	isByteElement := false
 	if (!isStringMsgType) {
 		//fmt.Printf("Type of message: %T, len: %d\n", message, len(message.([]interface{})))
-		_, isByteElement = message.([]interface{})[0].(byte)
+		_, isByteElement = message.([]interface{})[0].(float64)
 	}
 
 	entry, err := operator.NewEntry(body)
@@ -388,7 +388,12 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	if (isByteElement) {
 		msgArray := make([]byte, len(message.([]interface{})))
 		for i, v := range message.([]interface{}) {
-			msgArray[i] = v.(byte)
+			vnum := v.(float64)
+			if vnum >= 32 && vnum <= 126 {
+				msgArray[i] = byte(vnum)
+			} else {
+				msgArray[i] = 32
+			}
 		}
 		entry.AddAttribute("message_text", string(msgArray))
 	}
