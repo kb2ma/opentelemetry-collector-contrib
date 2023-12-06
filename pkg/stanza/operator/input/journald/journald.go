@@ -374,7 +374,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 	_, isStringMsgType := message.(string)
 	isByteElement := false
 	if (!isStringMsgType) {
-		fmt.Printf("Type of message: %T, len: %d\n", message, len(message.([]interface{})))
+		//fmt.Printf("Type of message: %T, len: %d\n", message, len(message.([]interface{})))
 		_, isByteElement = message.([]interface{})[0].(byte)
 	}
 
