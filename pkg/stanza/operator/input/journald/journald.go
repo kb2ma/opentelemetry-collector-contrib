@@ -372,8 +372,10 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 		return nil, "", errors.New("journald body missing MESSAGE field")
 	}
 	_, isStringMsgType := message.(string)
+	isByteElement := false
 	if (!isStringMsgType) {
 		fmt.Printf("Type of message: %T, len: %d\n", message, len(message.([]interface{})))
+		_, isByteElement = message.([]interface{})[0].(byte)
 	}
 
 	entry, err := operator.NewEntry(body)
@@ -383,7 +385,7 @@ func (operator *Input) parseJournalEntry(line []byte) (*entry.Entry, string, err
 
 	entry.Timestamp = time.Unix(0, timestampInt*1000) // in microseconds
 
-	if (!isStringMsgType) {
+	if (isByteElement) {
 		msgArray := make([]byte, len(message.([]interface{})))
 		for i, v := range message.([]interface{}) {
 			msgArray[i] = v.(byte)
